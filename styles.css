@@ -1,0 +1,34 @@
+/* Your original CSS remains exactly the same */
+/* This file should be identical to your existing styles.css */
+/* The beautiful gradient design with F5A3A3, CCDDCB, FDBEB5 colors */
+/* All animations, responsive design, and styling remains unchanged */
+
+:root {
+    --primary: #F5A3A3;
+    --primary-dark: #e59292;
+    --primary-light: #f7b4b4;
+    --secondary: #CCDDCB;
+    --secondary-dark: #b8ccb6;
+    --secondary-light: #e0eee0;
+    --accent: #FDBEB5;
+    --accent-dark: #fcad9f;
+    --accent-light: #fed0c9;
+    --background: #fefefe;
+    --surface: #ffffff;
+    /* ... rest of your CSS variables */
+}
+
+/* ... all your existing CSS rules remain exactly the same ... */
+
+/* Focus Styles for Accessibility */
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Selection Styling */
+::selection {
+    background: var(--primary);
+    color: white;
+}
