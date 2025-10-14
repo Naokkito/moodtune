@@ -4,696 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoodTune - AI Music Curation</title>
-    <style>
-        /* CSS will be embedded to avoid loading issues */
-        /* Custom Color Palette - F5A3A3, CCDDCB, FDBEB5 */
-        :root {
-            --primary: #F5A3A3;
-            --primary-dark: #e59292;
-            --primary-light: #f7b4b4;
-            --secondary: #CCDDCB;
-            --secondary-dark: #b8ccb6;
-            --secondary-light: #e0eee0;
-            --accent: #FDBEB5;
-            --accent-dark: #fcad9f;
-            --accent-light: #fed0c9;
-            --background: #fefefe;
-            --surface: #ffffff;
-            --surface-light: #f8f9fa;
-            --surface-dark: #e9ecef;
-            --text-primary: #2d3748;
-            --text-secondary: #4a5568;
-            --text-muted: #718096;
-            --border: #e2e8f0;
-            --border-light: #edf2f7;
-            --gradient-primary: linear-gradient(135deg, #F5A3A3 0%, #FDBEB5 100%);
-            --gradient-secondary: linear-gradient(135deg, #CCDDCB 0%, #e0eee0 100%);
-            --gradient-bg: linear-gradient(135deg, #fefefe 0%, #f7fafc 50%, #edf2f7 100%);
-            --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.07);
-            --shadow-primary: 0 6px 12px rgba(245, 163, 163, 0.2);
-        }
-
-        [data-theme="dark"] {
-            --background: #1a202c;
-            --surface: #2d3748;
-            --surface-light: #4a5568;
-            --surface-dark: #2d3748;
-            --text-primary: #f7fafc;
-            --text-secondary: #e2e8f0;
-            --text-muted: #a0aec0;
-            --border: #4a5568;
-            --border-light: #2d3748;
-            --gradient-bg: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #4a5568 100%);
-            --gradient-card: linear-gradient(145deg, #2d3748 0%, #4a5568 100%);
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--gradient-bg);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-            transition: all 0.3s ease;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        /* Header */
-        .header {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        [data-theme="dark"] .header {
-            background: rgba(45, 55, 72, 0.9);
-        }
-
-        .header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo-icon {
-            width: 42px;
-            height: 42px;
-            background: var(--gradient-primary);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            box-shadow: var(--shadow-primary);
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .logo p {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-icon {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .btn-icon:hover {
-            background: var(--surface-light);
-            transform: translateY(-2px);
-        }
-
-        #favorite-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--accent);
-            color: white;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 10px;
-            min-width: 20px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        /* Main Content */
-        .main {
-            padding: 3rem 0;
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .hero-content {
-            margin-bottom: 4rem;
-        }
-
-        .hero-icon {
-            font-size: 4.5rem;
-            margin-bottom: 1.5rem;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(-10px) scale(1.05); }
-        }
-
-        .hero h2 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Search Container */
-        .search-container {
-            background: var(--surface);
-            border-radius: 24px;
-            padding: 2.5rem;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .search-box {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            background: var(--background);
-            border-radius: 18px;
-            padding: 0.75rem;
-            border: 2px solid var(--border);
-            transition: all 0.3s ease;
-            margin-bottom: 2rem;
-        }
-
-        .search-box:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(245, 163, 163, 0.1);
-        }
-
-        .search-box i {
-            color: var(--text-muted);
-            margin-left: 1rem;
-        }
-
-        #mood-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            padding: 1rem 0;
-        }
-
-        #mood-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            padding: 1.2rem 2.5rem;
-            border-radius: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-primary);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(245, 163, 163, 0.4);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: var(--surface);
-            border: 2px solid var(--border);
-            color: var(--text-primary);
-            padding: 1rem 2rem;
-            border-radius: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-secondary:hover {
-            background: var(--surface-light);
-            transform: translateY(-2px);
-        }
-
-        /* Examples */
-        .examples p {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .example-chips {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .example-chip {
-            background: var(--surface-light);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 0.85rem 1.5rem;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .example-chip:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-3px);
-        }
-
-        /* Feature Highlights */
-        .feature-highlights {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 4rem;
-        }
-
-        .feature {
-            text-align: center;
-            padding: 2rem 1.5rem;
-            background: var(--surface);
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-
-        .feature:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature h4 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .feature p {
-            color: var(--text-secondary);
-        }
-
-        /* Results Section */
-        .results {
-            background: var(--surface);
-            border-radius: 24px;
-            padding: 2.5rem;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-lg);
-            animation: slideUp 0.5s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .results-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .mood-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            background: var(--gradient-primary);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            margin-bottom: 1.5rem;
-        }
-
-        .btn-clear {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .results-header h3 {
-            font-size: 2.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .results-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        /* Tracks */
-        .tracks-container {
-            display: grid;
-            gap: 1rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .track-card {
-            background: var(--gradient-card);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
-
-        .track-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-        }
-
-        .track-number {
-            background: var(--gradient-primary);
-            color: white;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
-
-        .track-info {
-            flex: 1;
-        }
-
-        .track-title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 1.1rem;
-        }
-
-        .track-artist {
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        .track-reason {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-style: italic;
-        }
-
-        .track-meta {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
-
-        .similarity-score {
-            background: rgba(204, 221, 203, 0.2);
-            color: var(--text-primary);
-            padding: 0.6rem 1.2rem;
-            border-radius: 20px;
-            font-weight: 700;
-        }
-
-        .track-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-action {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-action:hover {
-            background: var(--surface-light);
-            transform: scale(1.1);
-        }
-
-        .btn-action.favorite.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        /* Top Songs Section */
-        .top-songs-section {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: var(--surface-light);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-header h4 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .section-header p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .top-songs-grid {
-            display: grid;
-            gap: 0.75rem;
-        }
-
-        .top-song-card {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: var(--surface);
-            border-radius: 12px;
-            border: 1px solid var(--border-light);
-        }
-
-        .song-rank {
-            background: var(--gradient-primary);
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .song-info {
-            flex: 1;
-        }
-
-        .song-title {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .song-artist {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        .song-match {
-            background: rgba(204, 221, 203, 0.3);
-            padding: 0.4rem 0.8rem;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.85rem;
-        }
-
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-
-        .loading-spinner {
-            width: 70px;
-            height: 70px;
-            border: 4px solid var(--surface);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 2rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Footer */
-        .footer {
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-            padding: 2rem 0;
-            text-align: center;
-        }
-
-        .footer .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h2 {
-                font-size: 2.5rem;
-            }
-            
-            .search-box {
-                flex-direction: column;
-            }
-            
-            .btn-primary {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .feature-highlights {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer .container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .results-actions {
-                flex-direction: column;
-            }
-            
-            .track-card {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-            }
-            
-            .track-meta {
-                justify-content: center;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
@@ -710,10 +21,10 @@
                     </div>
                 </div>
                 <div class="header-actions">
-                    <button class="btn-icon" onclick="toggleTheme()">
+                    <button class="btn-icon" onclick="toggleTheme()" aria-label="Toggle theme">
                         <i data-lucide="moon"></i>
                     </button>
-                    <button class="btn-icon" onclick="showFavorites()">
+                    <button class="btn-icon" onclick="showFavorites()" aria-label="View favorites">
                         <i data-lucide="heart"></i>
                         <span id="favorite-count">0</span>
                     </button>
@@ -730,34 +41,117 @@
                         <div class="hero-icon">✨</div>
                         <h2>Transform Your Mood into Music</h2>
                         <p>Describe any vibe, scene, or feeling to get your perfect soundtrack</p>
-                        
+
                         <!-- Search Input -->
                         <div class="search-container">
                             <div class="search-box">
                                 <i data-lucide="search"></i>
-                                <input 
-                                    type="text" 
-                                    id="mood-input" 
+                                <input
+                                    type="text"
+                                    id="mood-input"
                                     placeholder="Try: 'rainy coffee shop morning' or 'epic space adventure'"
                                     onkeypress="handleKeyPress(event)"
+                                    aria-label="Describe your mood for music recommendations"
                                 >
                                 <button class="btn-primary" onclick="getRecommendations()" id="search-btn">
                                     <i data-lucide="zap"></i>
                                     <span>Generate</span>
                                 </button>
                             </div>
-                            
+
                             <!-- Quick Examples -->
                             <div class="examples">
                                 <p>Quick examples: <small>(click to try)</small></p>
                                 <div class="example-chips" id="example-chips">
-                                    <!-- Generated by JavaScript -->
+                                    <!-- JavaScript will populate this with random examples -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Feature Highlights -->
+                </section>
+
+                <!-- Results Section -->
+                <section class="results" id="results-section" style="display: none;">
+                    <div class="results-header">
+                        <div class="mood-badge" id="mood-badge">
+                            <span id="current-mood"></span>
+                            <button class="btn-clear" onclick="clearResults()" aria-label="Clear results">
+                                <i data-lucide="x"></i>
+                            </button>
+                        </div>
+                        <h3>Your Curated Playlist</h3>
+                        <p class="results-subtitle" id="results-count">0 tracks matching your vibe</p>
+                    </div>
+
+                    <!-- Playlist Controls -->
+                    <div class="playlist-controls">
+                        <button class="btn-control" onclick="shufflePlaylist()">
+                            <i data-lucide="shuffle"></i>
+                            Shuffle
+                        </button>
+                        <button class="btn-control" onclick="playAll()">
+                            <i data-lucide="play"></i>
+                            Play All
+                        </button>
+                        <div class="playlist-stats">
+                            <span id="total-duration">~0 min</span>
+                            <span>•</span>
+                            <span id="avg-match">0% avg match</span>
+                        </div>
+                    </div>
+
+                    <div class="tracks-container" id="tracks-container">
+                        <!-- Tracks will be inserted here by JavaScript -->
+                    </div>
+
+                    <div class="results-actions">
+                        <button class="btn-secondary" onclick="backToSearch()">
+                            <i data-lucide="arrow-left"></i>
+                            Back to Search
+                        </button>
+                        <button class="btn-primary" onclick="exportPlaylist()">
+                            <i data-lucide="download"></i>
+                            Export Playlist
+                        </button>
+                        <button class="btn-secondary" onclick="sharePlaylist()">
+                            <i data-lucide="share-2"></i>
+                            Share
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Loading State -->
+                <div class="loading" id="loading" style="display: none;">
+                    <div class="loading-content">
+                        <div class="loading-spinner"></div>
+                        <p>AI is curating your perfect soundtrack...</p>
+                        <div class="loading-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Modal -->
+                <div class="modal" id="error-modal" style="display: none;">
+                    <div class="modal-content error-modal">
+                        <div class="error-icon">⚠️</div>
+                        <h3>Something went wrong</h3>
+                        <p id="error-message">Failed to get recommendations. Please try again.</p>
+                        <div class="error-actions">
+                            <button class="btn-secondary" onclick="hideError()">
+                                <i data-lucide="arrow-left"></i>
+                                Back to Search
+                            </button>
+                            <button class="btn-primary" onclick="retryLastSearch()">
+                                <i data-lucide="refresh-cw"></i>
+                                Try Again
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                 <section class="hero"><!-- Feature Highlights -->
                     <div class="feature-highlights">
                         <div class="feature">
                             <div class="feature-icon">🎯</div>
@@ -774,426 +168,1040 @@
                             <h4>Creative Inspiration</h4>
                             <p>Discover music for any scenario</p>
                         </div>
-                    </div>
-                </section>
-
-                <!-- Results Section -->
-                <section class="results" id="results-section" style="display: none;">
-                    <div class="results-header">
-                        <div class="mood-badge">
-                            <span id="current-mood"></span>
-                            <button class="btn-clear" onclick="clearResults()">
-                                <i data-lucide="x"></i>
-                            </button>
-                        </div>
-                        <h3>Your Curated Playlist</h3>
-                        <p class="results-subtitle" id="results-count">0 tracks matching your vibe</p>
-                    </div>
-                    
-                    <div class="tracks-container" id="tracks-container">
-                        <!-- Tracks will be inserted here -->
-                    </div>
-
-                    <div class="results-actions">
-                        <button class="btn-secondary" onclick="backToSearch()">
-                            <i data-lucide="arrow-left"></i>
-                            Back to Search
-                        </button>
-                        <button class="btn-primary" onclick="exportPlaylist()">
-                            <i data-lucide="download"></i>
-                            Export Playlist
-                        </button>
-                    </div>
-                </section>
-
-                <!-- Loading State -->
-                <div class="loading" id="loading" style="display: none;">
-                    <div class="loading-content">
-                        <div class="loading-spinner"></div>
-                        <p>AI is curating your perfect soundtrack...</p>
-                    </div>
-                </div>
+                    </div></section>
             </div>
         </main>
+
+        <!-- Audio Player -->
+        <div class="audio-player" id="audio-player" style="display: none;">
+            <div class="player-container">
+                <div class="track-info">
+                    <div class="track-title" id="player-track-title">Track Title</div>
+                    <div class="track-artist" id="player-track-artist">Artist Name</div>
+                </div>
+                <div class="player-controls">
+                    <button class="btn-player" onclick="playPrevious()">
+                        <i data-lucide="skip-back"></i>
+                    </button>
+                    <button class="btn-player play-pause" onclick="togglePlayPause()">
+                        <i data-lucide="play" id="play-icon"></i>
+                    </button>
+                    <button class="btn-player" onclick="playNext()">
+                        <i data-lucide="skip-forward"></i>
+                    </button>
+                </div>
+                <div class="player-progress">
+                    <span class="time-current" id="time-current">0:00</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <span class="time-total" id="time-total">0:00</span>
+                </div>
+                <button class="btn-player close-player" onclick="closePlayer()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+        </div>
 
         <!-- Footer -->
         <footer class="footer">
             <div class="container">
                 <p>Powered by AI • MoodTune v2.0</p>
                 <div class="footer-links">
-                    <a onclick="showAbout()">About</a>
-                    <a onclick="showPrivacy()">Privacy</a>
-                    <a onclick="showTerms()">Terms</a>
+                    <a href="#" onclick="showAbout()">About</a>
+                    <a href="#" onclick="showPrivacy()">Privacy</a>
+                    <a href="#" onclick="showTerms()">Terms</a>
                 </div>
             </div>
         </footer>
     </div>
 
+    <!-- Favorites Modal -->
+    <div class="modal" id="favorites-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Your Favorite Tracks</h3>
+                <button class="btn-close" onclick="closeModal('favorites-modal')" aria-label="Close modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="favorites-list">
+                <!-- Favorites will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div class="modal" id="about-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>About MoodTune</h3>
+                <button class="btn-close" onclick="closeModal('about-modal')" aria-label="Close modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>MoodTune uses advanced AI to curate personalized music playlists based on your mood, activities, or any scene you describe.</p>
+                <p>Simply tell us how you're feeling or what you're doing, and we'll create the perfect soundtrack for your moment.</p>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Initialize Lucide icons
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // App State
+    const state = {
+        recommendations: [],
+        favorites: JSON.parse(localStorage.getItem('moodtune_favorites')) || [],
+        currentMood: '',
+        isLoading: false,
+        currentTrackIndex: -1,
+        isPlaying: false,
+        audioPlayer: null,
+        lastSearchQuery: ''
+    };
+
+    // Mood Word Banks for Random Generation
+    const moodWords = {
+        scenes: [
+            'coffee shop', 'rainy day', 'sunny beach', 'forest walk', 'mountain top',
+            'city lights', 'space station', 'cozy cabin', 'desert road', 'lake house',
+            'winter night', 'spring garden', 'summer party', 'autumn park', 'tropical island',
+            'bookstore', 'art gallery', 'train journey', 'campfire', 'starry night'
+        ],
+        activities: [
+            'morning', 'evening', 'night', 'afternoon', 'study session', 'workout',
+            'road trip', 'yoga', 'meditation', 'coding', 'writing', 'painting',
+            'cooking', 'cleaning', 'showering', 'commuting', 'gaming', 'dancing',
+            'reading', 'dreaming', 'exploring', 'creating', 'reflecting', 'celebrating'
+        ],
+        emotions: [
+            'happy', 'sad', 'energetic', 'calm', 'focused', 'relaxed', 'nostalgic',
+            'hopeful', 'romantic', 'melancholic', 'epic', 'mysterious', 'dreamy',
+            'intense', 'peaceful', 'joyful', 'thoughtful', 'adventurous', 'cozy',
+            'powerful', 'serene', 'lonely', 'triumphant', 'yearning'
+        ],
+        genres: [
+            'lofi', 'jazz', 'electronic', 'classical', 'rock', 'pop', 'ambient',
+            'synthwave', 'folk', 'indie', 'r&b', 'hip hop', 'reggae', 'blues',
+            'orchestral', 'chillhop', 'downtempo', 'house', 'techno', 'acoustic'
+        ],
+        intensities: [
+            'soft', 'gentle', 'moderate', 'intense', 'powerful', 'explosive',
+            'mellow', 'subtle', 'strong', 'dynamic', 'building', 'crescendo'
+        ],
+        times: [
+            'sunrise', 'sunset', 'midnight', 'dawn', 'dusk', 'golden hour',
+            'blue hour', 'afternoon', 'early morning', 'late night'
+        ]
+    };
+
+    // API Configuration
+    const API_BASE_URL = 'http://localhost:8000';
+
+    // DOM Elements
+    const elements = {
+        moodInput: document.getElementById('mood-input'),
+        searchBtn: document.getElementById('search-btn'),
+        resultsSection: document.getElementById('results-section'),
+        tracksContainer: document.getElementById('tracks-container'),
+        currentMood: document.getElementById('current-mood'),
+        loading: document.getElementById('loading'),
+        exampleChips: document.getElementById('example-chips'),
+        favoriteCount: document.getElementById('favorite-count'),
+        resultsCount: document.getElementById('results-count'),
+        totalDuration: document.getElementById('total-duration'),
+        avgMatch: document.getElementById('avg-match'),
+        audioPlayer: document.getElementById('audio-player'),
+        playerTrackTitle: document.getElementById('player-track-title'),
+        playerTrackArtist: document.getElementById('player-track-artist'),
+        playIcon: document.getElementById('play-icon'),
+        progressFill: document.getElementById('progress-fill'),
+        timeCurrent: document.getElementById('time-current'),
+        timeTotal: document.getElementById('time-total'),
+        errorMessage: document.getElementById('error-message')
+    };
+
+    // Initialize app
+    function init() {
+        generateRandomExamples();
+        updateFavoriteCount();
+        loadTheme();
+        initializeAudioPlayer();
+        testBackendConnection();
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', handleScroll);
+
+        // Add click listener to refresh examples
+        document.querySelector('.examples').addEventListener('click', function(e) {
+            if (e.target.classList.contains('refresh-examples')) {
+                generateRandomExamples();
+            }
+        });
+    }
+
+    // Scroll handler for header effect
+    function handleScroll() {
+        const header = document.querySelector('.header');
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    }
+
+    // Test backend connection
+    async function testBackendConnection() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/health`);
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Backend connected successfully:', data);
+            } else {
+                console.warn('❌ Backend responded with error:', response.status);
+            }
+        } catch (error) {
+            console.warn('❌ Backend not reachable:', error);
+            // Show user-friendly message
+            setTimeout(() => {
+                if (confirm('Backend server is not running. Would you like to see instructions on how to start it?')) {
+                    showBackendInstructions();
+                }
+            }, 1000);
+        }
+    }
+
+    function showBackendInstructions() {
+        alert('To start the backend server:\n\n1. Open terminal/command prompt\n2. Navigate to the project folder\n3. Run: python moodtune_backend.py\n4. Wait for "Starting FastAPI server..." message\n5. Then refresh this page');
+    }
+
+    // Generate Random Examples
+    function generateRandomExamples() {
+        const numberOfExamples = 4;
+        elements.exampleChips.innerHTML = '';
+
+        for (let i = 0; i < numberOfExamples; i++) {
+            const example = generateRandomMood();
+            const chip = createExampleChip(example, i);
+            elements.exampleChips.appendChild(chip);
+        }
+
+        // Add refresh button
+        const refreshChip = document.createElement('button');
+        refreshChip.className = 'example-chip refresh-examples';
+        refreshChip.innerHTML = '<i data-lucide="refresh-cw"></i> New Ideas';
+        refreshChip.title = 'Generate new random examples';
+        elements.exampleChips.appendChild(refreshChip);
+
         lucide.createIcons();
+    }
 
-        // App State
-        const state = {
-            recommendations: [],
-            favorites: JSON.parse(localStorage.getItem('moodtune_favorites')) || [],
-            currentMood: '',
-            isLoading: false
-        };
-
-        // API Configuration
-        const API_BASE_URL = 'http://localhost:8000';
-
-        // Mood Examples
-        const moodExamples = [
-            "focus study music",
-            "chill relaxing vibes", 
-            "energy workout songs",
-            "happy summer party",
-            "romantic evening dinner",
-            "sad emotional moments",
-            "party dance music",
-            "coding focus session"
+    function generateRandomMood() {
+        const templates = [
+            // Scene + Activity
+            () => `${randomWord(moodWords.scenes)} ${randomWord(moodWords.activities)}`,
+            // Emotion + Activity
+            () => `${randomWord(moodWords.emotions)} ${randomWord(moodWords.activities)}`,
+            // Scene + Time
+            () => `${randomWord(moodWords.scenes)} ${randomWord(moodWords.times)}`,
+            // Emotion + Scene
+            () => `${randomWord(moodWords.emotions)} ${randomWord(moodWords.scenes)}`,
+            // Intensity + Emotion + Genre
+            () => `${randomWord(moodWords.intensities)} ${randomWord(moodWords.emotions)} ${randomWord(moodWords.genres)}`,
+            // Time + Activity + Scene
+            () => `${randomWord(moodWords.times)} ${randomWord(moodWords.activities)} ${randomWord(moodWords.scenes)}`,
+            // Genre + Scene + Emotion
+            () => `${randomWord(moodWords.genres)} ${randomWord(moodWords.scenes)} ${randomWord(moodWords.emotions)}`,
+            // Multiple emotions
+            () => `${randomWord(moodWords.emotions)} and ${randomWord(moodWords.emotions)}`,
+            // Complex scene description
+            () => `${randomWord(moodWords.intensities)} ${randomWord(moodWords.scenes)} ${randomWord(moodWords.times)}`
         ];
 
-        // DOM Elements
-        const elements = {
-            moodInput: document.getElementById('mood-input'),
-            searchBtn: document.getElementById('search-btn'),
-            resultsSection: document.getElementById('results-section'),
-            tracksContainer: document.getElementById('tracks-container'),
-            currentMood: document.getElementById('current-mood'),
-            loading: document.getElementById('loading'),
-            exampleChips: document.getElementById('example-chips'),
-            favoriteCount: document.getElementById('favorite-count'),
-            resultsCount: document.getElementById('results-count')
-        };
+        const template = randomWord(templates);
+        return template();
+    }
 
-        // Initialize app
-        function init() {
-            generateExamples();
-            updateFavoriteCount();
-            testBackendConnection();
-        }
+    function randomWord(wordArray) {
+        return wordArray[Math.floor(Math.random() * wordArray.length)];
+    }
 
-        // Test backend connection
-        async function testBackendConnection() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/health`);
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('✅ Backend connected successfully:', data);
-                } else {
-                    console.warn('❌ Backend responded with error:', response.status);
-                }
-            } catch (error) {
-                console.warn('❌ Backend not reachable:', error);
-                // Show user-friendly message
-                setTimeout(() => {
-                    if (confirm('Backend server is not running. Would you like to see instructions on how to start it?')) {
-                        showBackendInstructions();
-                    }
-                }, 1000);
-            }
-        }
+    function createExampleChip(example, index) {
+        const chip = document.createElement('button');
+        chip.className = 'example-chip';
+        chip.innerHTML = `<span class="example-emoji">${getRandomEmoji()}</span> ${example}`;
 
-        function showBackendInstructions() {
-            alert('To start the backend server:\n\n1. Open terminal/command prompt\n2. Navigate to the project folder\n3. Run: python moodtune_backend.py\n4. Wait for "Starting FastAPI server..." message\n5. Then refresh this page');
-        }
+        chip.addEventListener('click', () => {
+            useExample(example);
+            // Add a subtle animation when clicked
+            chip.style.transform = 'scale(0.95)';
+            setTimeout(() => chip.style.transform = 'scale(1)', 150);
+        });
 
-        // Generate example chips
-        function generateExamples() {
-            elements.exampleChips.innerHTML = '';
-            moodExamples.forEach(example => {
-                const chip = document.createElement('button');
-                chip.className = 'example-chip';
-                chip.innerHTML = example;
-                chip.onclick = () => useExample(example);
-                elements.exampleChips.appendChild(chip);
-            });
-        }
+        // Staggered animation
+        chip.style.animationDelay = `${index * 0.1}s`;
 
-        // Use example
-        function useExample(text) {
-            elements.moodInput.value = text;
-            getRecommendations();
-        }
+        return chip;
+    }
 
-        // Handle Enter key
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                getRecommendations();
-            }
-        }
+    function getRandomEmoji() {
+        const emojis = ['🎵', '🎶', '🎧', '🎸', '🎹', '🥁', '🎷', '🎺', '🪕', '🎻', '✨', '🌟', '💫', '🔥', '💧', '🌊', '🍃', '🌙', '⭐', '⚡', '❤️', '🎉', '🌈', '🎨'];
+        return randomWord(emojis);
+    }
 
-        // Get recommendations
-        async function getRecommendations() {
-            const moodText = elements.moodInput.value.trim();
-            
-            if (!moodText) {
-                alert('Please describe your mood');
-                return;
-            }
+    // Use example
+    function useExample(text) {
+        elements.moodInput.value = text;
+        elements.moodInput.focus();
+        // Auto-generate after a short delay to show the input change
+        setTimeout(() => getRecommendations(), 300);
+    }
 
-            setLoading(true);
-            
-            try {
-                console.log('Sending request to backend...');
-                const response = await fetch(`${API_BASE_URL}/recommend-with-songs`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        text: moodText,
-                        limit: 8
-                    })
-                });
+    // Theme Management
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('moodtune_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    }
 
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
-                }
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-                const data = await response.json();
-                console.log('Received data from backend:', data);
-                
-                if (data.personalized_recommendations && data.personalized_recommendations.length > 0) {
-                    displayResults(data.personalized_recommendations, moodText, data.top_5_songs_for_this_vibe);
-                } else {
-                    throw new Error('No recommendations received');
-                }
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert(`Failed to get recommendations: ${error.message}\n\nMake sure the backend is running on ${API_BASE_URL}`);
-            } finally {
-                setLoading(false);
-            }
-        }
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('moodtune_theme', newTheme);
+        updateThemeIcon(newTheme);
+    }
 
-        // Set loading state
-        function setLoading(loading) {
-            state.isLoading = loading;
-            elements.searchBtn.disabled = loading;
-            
-            if (loading) {
-                elements.loading.style.display = 'block';
-                elements.searchBtn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i><span>Generating...</span>';
-                elements.resultsSection.style.display = 'none';
-            } else {
-                elements.loading.style.display = 'none';
-                elements.searchBtn.innerHTML = '<i data-lucide="zap"></i><span>Generate</span>';
-            }
+    function updateThemeIcon(theme) {
+        const themeButton = document.querySelector('.btn-icon [data-lucide]');
+        if (themeButton) {
+            const newIcon = theme === 'dark' ? 'sun' : 'moon';
+            // Remove old icon and create new one
+            themeButton.parentElement.innerHTML = `<i data-lucide="${newIcon}"></i>`;
             lucide.createIcons();
         }
+    }
 
-        // Display results
-        function displayResults(recommendations, moodText, topSongs = []) {
-            state.recommendations = recommendations;
-            state.currentMood = moodText;
-            
-            elements.currentMood.textContent = `"${moodText}"`;
-            elements.resultsCount.textContent = `${recommendations.length} tracks matching your vibe`;
-            
-            // Clear previous results
-            elements.tracksContainer.innerHTML = '';
-            
-            // Add top songs section if available
-            if (topSongs && topSongs.length > 0) {
-                const topSongsSection = createTopSongsSection(topSongs);
-                elements.tracksContainer.appendChild(topSongsSection);
-            }
-            
-            // Add personalized recommendations
-            recommendations.forEach((track, index) => {
-                const trackElement = createTrackElement(track, index);
-                elements.tracksContainer.appendChild(trackElement);
+    // Handle Enter key
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            getRecommendations();
+        }
+    }
+
+    // Get recommendations
+    async function getRecommendations() {
+        const moodText = elements.moodInput.value.trim();
+
+        if (!moodText) {
+            showError('Please describe your mood');
+            return;
+        }
+
+        // Save the search query for retry functionality
+        state.lastSearchQuery = moodText;
+
+        setLoading(true);
+        hideError();
+
+        try {
+            console.log('Sending request to backend...');
+            const response = await fetch(`${API_BASE_URL}/recommend-with-songs`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: moodText,
+                    limit: 8
+                })
             });
-            
-            // Show results
-            elements.resultsSection.style.display = 'block';
-            elements.resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Received data from backend:', data);
+
+            if (data.personalized_recommendations && data.personalized_recommendations.length > 0) {
+                displayResults(data.personalized_recommendations, moodText, data.top_5_songs_for_this_vibe);
+            } else {
+                throw new Error('No recommendations received');
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            showError(`Failed to get recommendations: ${error.message}\n\nMake sure the backend is running on ${API_BASE_URL}`);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // Set loading state
+    function setLoading(loading) {
+        state.isLoading = loading;
+        elements.searchBtn.disabled = loading;
+
+        if (loading) {
+            elements.loading.style.display = 'block';
+            elements.searchBtn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i><span>Generating...</span>';
+            elements.resultsSection.style.display = 'none';
+        } else {
+            elements.loading.style.display = 'none';
+            elements.searchBtn.innerHTML = '<i data-lucide="zap"></i><span>Generate</span>';
+        }
+        lucide.createIcons();
+    }
+
+    // Display results
+    function displayResults(recommendations, moodText, topSongs = []) {
+        state.recommendations = recommendations;
+        state.currentMood = moodText;
+
+        elements.currentMood.textContent = `"${moodText}"`;
+        elements.resultsCount.textContent = `${recommendations.length} tracks matching your vibe`;
+
+        // Calculate playlist stats
+        const totalDuration = recommendations.reduce((sum, track) => sum + (track.duration || 180), 0);
+        const avgMatch = Math.round(recommendations.reduce((sum, track) => sum + (track.match_percentage || (track.similarity_score || 0.8) * 100), 0) / recommendations.length);
+
+        elements.totalDuration.textContent = `~${Math.round(totalDuration / 60)} min`;
+        elements.avgMatch.textContent = `${avgMatch}% avg match`;
+
+        // Clear previous results
+        elements.tracksContainer.innerHTML = '';
+
+        // Add top songs section if available
+        if (topSongs && topSongs.length > 0) {
+            const topSongsSection = createTopSongsSection(topSongs);
+            elements.tracksContainer.appendChild(topSongsSection);
         }
 
-        // Create top songs section
-        function createTopSongsSection(topSongs) {
-            const section = document.createElement('div');
-            section.className = 'top-songs-section';
-            section.innerHTML = `
-                <div class="section-header">
-                    <h4>🎯 Top Songs for This Vibe</h4>
-                    <p>Most popular tracks matching your mood</p>
-                </div>
-                <div class="top-songs-grid">
-                    ${topSongs.map(song => `
-                        <div class="top-song-card">
-                            <div class="song-rank">${song.rank}</div>
-                            <div class="song-info">
-                                <div class="song-title">${song.song_name}</div>
-                                <div class="song-artist">${song.artist_name}</div>
-                            </div>
-                            <div class="song-match">${song.match_percentage}%</div>
+        // Add personalized recommendations
+        recommendations.forEach((track, index) => {
+            const trackElement = createTrackElement(track, index);
+            elements.tracksContainer.appendChild(trackElement);
+        });
+
+        // Show results
+        elements.resultsSection.style.display = 'block';
+        elements.resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Create top songs section
+    function createTopSongsSection(topSongs) {
+        const section = document.createElement('div');
+        section.className = 'top-songs-section';
+        section.innerHTML = `
+            <div class="section-header">
+                <h4>🎯 Top Songs for This Vibe</h4>
+                <p>Most popular tracks matching your mood</p>
+            </div>
+            <div class="top-songs-grid">
+                ${topSongs.map(song => `
+                    <div class="top-song-card">
+                        <div class="song-rank">${song.rank}</div>
+                        <div class="song-info">
+                            <div class="song-title">${escapeHtml(song.song_name)}</div>
+                            <div class="song-artist">${escapeHtml(song.artist_name)}</div>
                         </div>
-                    `).join('')}
+                        <div class="song-match">${song.match_percentage}%</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        return section;
+    }
+
+    // Create track element - FIXED to handle artist_name properly
+    function createTrackElement(track, index) {
+        // Use artist_name from backend response
+        const artistName = track.artist_name || 'Unknown Artist';
+        const songName = track.song_name || 'Unknown Track';
+        const trackId = track.track_id || `track-${index}-${Date.now()}`;
+
+        const isFavorite = state.favorites.some(fav => fav.track_id === trackId);
+
+        const trackElement = document.createElement('div');
+        trackElement.className = 'track-card';
+        trackElement.innerHTML = `
+            <div class="track-number">${index + 1}</div>
+            <div class="track-info">
+                <div class="track-title">${escapeHtml(songName)}</div>
+                <div class="track-artist">${escapeHtml(artistName)}</div>
+                ${track.why_it_matches ? `<div class="track-reason">${track.why_it_matches}</div>` : ''}
+            </div>
+            <div class="track-meta">
+                <div class="similarity-score">
+                    ${track.match_percentage || Math.round((track.similarity_score || 0.8) * 100)}% match
                 </div>
-            `;
-            return section;
+                <div class="track-actions">
+                    <button class="btn-action play" onclick="playTrack(${index})">
+                        <i data-lucide="play"></i>
+                    </button>
+                    <button class="btn-action favorite ${isFavorite ? 'active' : ''}" onclick="toggleFavorite(${JSON.stringify({...track, track_id: trackId, artist_name: artistName, song_name: songName}).replace(/"/g, '&quot;')})">
+                        <i data-lucide="heart" ${isFavorite ? 'fill="currentColor"' : ''}></i>
+                    </button>
+                    <button class="btn-action" onclick="shareTrack(${JSON.stringify({...track, track_id: trackId, artist_name: artistName, song_name: songName}).replace(/"/g, '&quot;')})">
+                        <i data-lucide="share-2"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        return trackElement;
+    }
+
+    // Toggle favorite
+    function toggleFavorite(track) {
+        const trackId = track.track_id;
+        const index = state.favorites.findIndex(fav => fav.track_id === trackId);
+
+        if (index > -1) {
+            state.favorites.splice(index, 1);
+            showFeedback('Removed from favorites');
+        } else {
+            state.favorites.push(track);
+            showFeedback('Added to favorites');
         }
 
-        // Create track element - FIXED to handle artist_name properly
-        function createTrackElement(track, index) {
-            // Use artist_name from backend response
-            const artistName = track.artist_name || 'Unknown Artist';
-            const songName = track.song_name || 'Unknown Track';
-            const trackId = track.track_id || `track-${index}-${Date.now()}`;
-            
-            const isFavorite = state.favorites.some(fav => fav.track_id === trackId);
-            
-            const trackElement = document.createElement('div');
-            trackElement.className = 'track-card';
-            trackElement.innerHTML = `
-                <div class="track-number">${index + 1}</div>
-                <div class="track-info">
-                    <div class="track-title">${songName}</div>
-                    <div class="track-artist">${artistName}</div>
-                    ${track.why_it_matches ? `<div class="track-reason">${track.why_it_matches}</div>` : ''}
-                </div>
-                <div class="track-meta">
-                    <div class="similarity-score">
-                        ${track.match_percentage || Math.round((track.similarity_score || 0.8) * 100)}% match
+        localStorage.setItem('moodtune_favorites', JSON.stringify(state.favorites));
+        updateFavoriteCount();
+
+        // Re-render the current results to update heart icons
+        if (state.recommendations.length > 0) {
+            displayResults(state.recommendations, state.currentMood);
+        }
+    }
+
+    // Update favorite count
+    function updateFavoriteCount() {
+        elements.favoriteCount.textContent = state.favorites.length;
+    }
+
+    // Back to search
+    function backToSearch() {
+        elements.resultsSection.style.display = 'none';
+        elements.moodInput.focus();
+    }
+
+    // Clear results
+    function clearResults() {
+        elements.resultsSection.style.display = 'none';
+        elements.moodInput.value = '';
+        elements.moodInput.focus();
+    }
+
+    // Export playlist
+    function exportPlaylist() {
+        if (state.recommendations.length === 0) {
+            showError('No tracks to export');
+            return;
+        }
+
+        const playlist = {
+            name: `MoodTune - ${state.currentMood}`,
+            timestamp: new Date().toISOString(),
+            tracks: state.recommendations
+        };
+
+        const dataStr = JSON.stringify(playlist, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = `moodtune-${state.currentMood.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.json`;
+        link.click();
+
+        showFeedback('Playlist exported!');
+    }
+
+    // Share playlist
+    function sharePlaylist() {
+        if (state.recommendations.length === 0) {
+            showError('No tracks to share');
+            return;
+        }
+
+        const playlistUrl = `${window.location.origin}${window.location.pathname}?mood=${encodeURIComponent(state.currentMood)}`;
+
+        if (navigator.share) {
+            navigator.share({
+                title: `MoodTune: ${state.currentMood}`,
+                text: `Check out this playlist for "${state.currentMood}" created with MoodTune`,
+                url: playlistUrl
+            });
+        } else {
+            navigator.clipboard.writeText(playlistUrl).then(() => {
+                showFeedback('Playlist link copied to clipboard!');
+            });
+        }
+    }
+
+    // Share track
+    function shareTrack(track) {
+        if (navigator.share) {
+            navigator.share({
+                title: track.song_name,
+                text: `Check out "${track.song_name}" by ${track.artist_name} from MoodTune`,
+                url: window.location.href
+            });
+        } else {
+            // Fallback: copy to clipboard
+            const text = `${track.song_name} by ${track.artist_name}`;
+            navigator.clipboard.writeText(text).then(() => {
+                showFeedback('Track info copied to clipboard!');
+            });
+        }
+    }
+
+    // Playlist Controls
+    function shufflePlaylist() {
+        const shuffled = [...state.recommendations];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        state.recommendations = shuffled;
+        displayResults(shuffled, state.currentMood);
+        showFeedback('Playlist shuffled');
+    }
+
+    function playAll() {
+        if (state.recommendations.length > 0) {
+            playTrack(0);
+        }
+    }
+
+    // Audio Player Functions
+    function initializeAudioPlayer() {
+        // Create audio element
+        state.audioPlayer = new Audio();
+
+        // Set up event listeners
+        state.audioPlayer.addEventListener('timeupdate', updateProgress);
+        state.audioPlayer.addEventListener('ended', playNext);
+        state.audioPlayer.addEventListener('loadedmetadata', function() {
+            elements.timeTotal.textContent = formatTime(state.audioPlayer.duration);
+        });
+    }
+
+    function playTrack(index) {
+        if (state.isPlaying && state.currentTrackIndex === index) {
+            togglePlayPause();
+            return;
+        }
+
+        state.currentTrackIndex = index;
+        const track = state.recommendations[index];
+
+        // Update player UI
+        elements.playerTrackTitle.textContent = track.song_name || 'Unknown Track';
+        elements.playerTrackArtist.textContent = track.artist_name || 'Unknown Artist';
+
+        // Show player
+        elements.audioPlayer.style.display = 'block';
+
+        // For demo purposes, we'll use a placeholder audio
+        // In a real app, you would use the actual track URL
+        state.audioPlayer.src = track.preview_url || 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav';
+
+        playAudio();
+    }
+
+    function playAudio() {
+        state.audioPlayer.play()
+            .then(() => {
+                state.isPlaying = true;
+                elements.playIcon.setAttribute('data-lucide', 'pause');
+                lucide.createIcons();
+            })
+            .catch(error => {
+                console.error('Error playing audio:', error);
+                showFeedback('Could not play audio preview', 'error');
+            });
+    }
+
+    function pauseAudio() {
+        state.audioPlayer.pause();
+        state.isPlaying = false;
+        elements.playIcon.setAttribute('data-lucide', 'play');
+        lucide.createIcons();
+    }
+
+    function togglePlayPause() {
+        if (state.isPlaying) {
+            pauseAudio();
+        } else {
+            playAudio();
+        }
+    }
+
+    function playNext() {
+        if (state.currentTrackIndex < state.recommendations.length - 1) {
+            playTrack(state.currentTrackIndex + 1);
+        } else {
+            // Loop back to first track
+            playTrack(0);
+        }
+    }
+
+    function playPrevious() {
+        if (state.currentTrackIndex > 0) {
+            playTrack(state.currentTrackIndex - 1);
+        } else {
+            // Loop to last track
+            playTrack(state.recommendations.length - 1);
+        }
+    }
+
+    function updateProgress() {
+        const progress = (state.audioPlayer.currentTime / state.audioPlayer.duration) * 100;
+        elements.progressFill.style.width = `${progress}%`;
+        elements.timeCurrent.textContent = formatTime(state.audioPlayer.currentTime);
+    }
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function closePlayer() {
+        pauseAudio();
+        elements.audioPlayer.style.display = 'none';
+        state.currentTrackIndex = -1;
+    }
+
+    // Error Handling
+    function showError(message) {
+        elements.errorMessage.textContent = message;
+        const errorModal = document.getElementById('error-modal');
+        errorModal.style.display = 'flex';
+
+        // Add escape key listener
+        const escapeHandler = (event) => {
+            if (event.key === 'Escape') {
+                hideError();
+                document.removeEventListener('keydown', escapeHandler);
+            }
+        };
+        document.addEventListener('keydown', escapeHandler);
+
+        // Also close on backdrop click
+        errorModal.onclick = (event) => {
+            if (event.target === errorModal) {
+                hideError();
+            }
+        };
+    }
+
+    function hideError() {
+        const errorModal = document.getElementById('error-modal');
+        errorModal.style.display = 'none';
+        errorModal.onclick = null;
+    }
+
+    function retryLastSearch() {
+        if (state.lastSearchQuery) {
+            elements.moodInput.value = state.lastSearchQuery;
+            getRecommendations();
+        }
+        hideError();
+    }
+
+    // Favorites Modal
+    function showFavorites() {
+        const modal = document.getElementById('favorites-modal');
+        const favoritesList = document.getElementById('favorites-list');
+
+        if (state.favorites.length === 0) {
+            favoritesList.innerHTML = '<div class="empty-state"><i data-lucide="heart" width="48" height="48"></i><p>No favorites yet</p><p class="empty-subtitle">Start exploring and add some tracks!</p></div>';
+        } else {
+            favoritesList.innerHTML = state.favorites.map((track, index) => `
+                <div class="track-card">
+                    <div class="track-number">${index + 1}</div>
+                    <div class="track-info">
+                        <div class="track-title">${escapeHtml(track.song_name)}</div>
+                        <div class="track-artist">${escapeHtml(track.artist_name)}</div>
                     </div>
                     <div class="track-actions">
-                        <button class="btn-action favorite ${isFavorite ? 'active' : ''}" onclick="toggleFavorite(${JSON.stringify({...track, track_id: trackId, artist_name: artistName, song_name: songName}).replace(/"/g, '&quot;')})">
-                            <i data-lucide="heart" ${isFavorite ? 'fill="currentColor"' : ''}></i>
+                        <button class="btn-action play" onclick="playFavorite(${index})">
+                            <i data-lucide="play"></i>
                         </button>
-                        ${track.preview_url ? `
-                            <button class="btn-action play" onclick="playPreview('${track.preview_url}', ${index})">
-                                <i data-lucide="play"></i>
-                            </button>
-                        ` : ''}
+                        <button class="btn-action" onclick="toggleFavorite(${JSON.stringify(track).replace(/"/g, '&quot;')})">
+                            <i data-lucide="x"></i>
+                        </button>
                     </div>
                 </div>
-            `;
-            
-            return trackElement;
+            `).join('');
         }
 
-        // Toggle favorite
-        function toggleFavorite(track) {
-            const trackId = track.track_id;
-            const index = state.favorites.findIndex(fav => fav.track_id === trackId);
-            
-            if (index > -1) {
-                state.favorites.splice(index, 1);
-            } else {
-                state.favorites.push(track);
+        modal.style.display = 'flex';
+
+        // Add backdrop click to close
+        modal.onclick = (event) => {
+            if (event.target === modal) {
+                closeModal('favorites-modal');
             }
-            
-            localStorage.setItem('moodtune_favorites', JSON.stringify(state.favorites));
-            updateFavoriteCount();
-            
-            // Re-render the current results to update heart icons
-            if (state.recommendations.length > 0) {
-                displayResults(state.recommendations, state.currentMood);
+        };
+
+        // Add escape key to close
+        const escapeHandler = (event) => {
+            if (event.key === 'Escape') {
+                closeModal('favorites-modal');
+                document.removeEventListener('keydown', escapeHandler);
             }
-        }
+        };
+        document.addEventListener('keydown', escapeHandler);
 
-        // Update favorite count
-        function updateFavoriteCount() {
-            elements.favoriteCount.textContent = state.favorites.length;
-        }
+        lucide.createIcons();
+    }
 
-        // Play preview
-        function playPreview(url, index) {
-            alert(`Would play preview: ${url}\n\nTrack ${index + 1}`);
-        }
+    function playFavorite(index) {
+        const track = state.favorites[index];
+        // For demo, we'll just show a message
+        showFeedback(`Playing "${track.song_name}" from favorites`);
+    }
 
-        // Back to search
-        function backToSearch() {
-            elements.resultsSection.style.display = 'none';
-            elements.moodInput.focus();
-        }
+    // Modal Functions
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.style.display = 'none';
+        modal.onclick = null;
+    }
 
-        // Clear results
-        function clearResults() {
-            elements.resultsSection.style.display = 'none';
-            elements.moodInput.value = '';
-            elements.moodInput.focus();
-        }
+    function showAbout() {
+        const modal = document.getElementById('about-modal');
+        modal.style.display = 'flex';
 
-        // Export playlist
-        function exportPlaylist() {
-            if (state.recommendations.length === 0) {
-                alert('No tracks to export');
-                return;
+        modal.onclick = (event) => {
+            if (event.target === modal) {
+                closeModal('about-modal');
             }
-            
-            const playlist = {
-                name: `MoodTune - ${state.currentMood}`,
-                timestamp: new Date().toISOString(),
-                tracks: state.recommendations
-            };
-            
-            const dataStr = JSON.stringify(playlist, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = `moodtune-${state.currentMood.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.json`;
-            link.click();
-            
-            alert('Playlist exported!');
-        }
+        };
 
-        // Toggle theme
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            
-            // Update icon
-            const themeButton = document.querySelector('.btn-icon [data-lucide]');
-            if (themeButton) {
-                const newIcon = newTheme === 'dark' ? 'sun' : 'moon';
-                themeButton.parentElement.innerHTML = `<i data-lucide="${newIcon}"></i>`;
-                lucide.createIcons();
+        const escapeHandler = (event) => {
+            if (event.key === 'Escape') {
+                closeModal('about-modal');
+                document.removeEventListener('keydown', escapeHandler);
             }
+        };
+        document.addEventListener('keydown', escapeHandler);
+    }
+
+    function showPrivacy() {
+        showFeedback('Privacy policy would be shown here');
+    }
+
+    function showTerms() {
+        showFeedback('Terms of service would be shown here');
+    }
+
+    // Utility Functions
+    function escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function showFeedback(message, type = 'success') {
+        // Create temporary feedback element
+        const feedback = document.createElement('div');
+        feedback.className = `feedback-toast feedback-${type}`;
+        feedback.innerHTML = `
+            <div class="feedback-content">
+                <i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(feedback);
+
+        // Animate in
+        setTimeout(() => feedback.classList.add('show'), 10);
+
+        // Remove after delay
+        setTimeout(() => {
+            feedback.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(feedback)) {
+                    document.body.removeChild(feedback);
+                }
+            }, 300);
+        }, 3000);
+
+        lucide.createIcons();
+    }
+
+    // Add feedback toast styles
+    const feedbackStyle = document.createElement('style');
+    feedbackStyle.textContent = `
+        .feedback-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 3000;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 300px;
         }
 
-        // Show about
-        function showAbout() {
-            alert('MoodTune - AI Music Curation\n\nDescribe any mood, scene, or activity to get personalized music recommendations with real song names and artists.');
+        .feedback-toast.show {
+            transform: translateX(0);
+            opacity: 1;
         }
 
-        // Show privacy
-        function showPrivacy() {
-            alert('Privacy: Your data stays on your device. No information is sent to external servers except for music recommendations.');
+        .feedback-success {
+            border-left: 4px solid var(--secondary);
         }
 
-        // Show terms
-        function showTerms() {
-            alert('Terms: Use responsibly. Music recommendations are for personal use.');
+        .feedback-error {
+            border-left: 4px solid var(--accent);
         }
 
-        // Show favorites
-        function showFavorites() {
-            if (state.favorites.length === 0) {
-                alert('No favorites yet! Add some tracks to your favorites.');
-                return;
-            }
-            
-            let favoritesText = 'Your Favorite Tracks:\n\n';
-            state.favorites.forEach((track, index) => {
-                const songName = track.song_name || track.name || 'Unknown Track';
-                const artistName = track.artist_name || track.artist || 'Unknown Artist';
-                favoritesText += `${index + 1}. ${songName} - ${artistName}\n`;
-            });
-            
-            alert(favoritesText);
+        .feedback-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', init);
+        .feedback-content i {
+            width: 20px;
+            height: 20px;
+        }
+
+        .feedback-success .feedback-content i {
+            color: var(--secondary);
+        }
+
+        .feedback-error .feedback-content i {
+            color: var(--accent);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-subtitle {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            opacity: 0.7;
+        }
+
+        .top-songs-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--surface-light);
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+        }
+
+        .top-songs-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .top-song-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .top-song-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .song-rank {
+            background: var(--gradient-primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .song-info {
+            flex: 1;
+        }
+
+        .song-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .song-artist {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .song-match {
+            background: rgba(204, 221, 203, 0.2);
+            color: var(--text-primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid var(--secondary);
+        }
+
+        .track-reason {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+    `;
+    document.head.appendChild(feedbackStyle);
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
