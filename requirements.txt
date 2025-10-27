@@ -1,0 +1,4 @@
+pip install fastapi uvicorn pydantic numpy pandas sentence-transformers
+pip install chromadb
+pip install torch
+pip install fastapi uvicorn pydantic numpy pandas sentence-transformers chromadb
