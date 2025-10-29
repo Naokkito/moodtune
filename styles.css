@@ -1369,3 +1369,90 @@ input:focus-visible {
     gap: 0.5rem;
     align-items: center;
 }
+/* Top Songs Section Streaming Links */
+.top-song-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.top-song-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.song-actions {
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.top-song-card:hover .song-actions {
+    opacity: 1;
+}
+
+.song-actions .btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.song-actions .btn-action:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow);
+}
+
+.song-actions .spotify-link:hover {
+    background: #1DB954;
+    color: white;
+    border-color: #1DB954;
+}
+
+.song-actions .apple-music-link:hover {
+    background: #FA243C;
+    color: white;
+    border-color: #FA243C;
+}
+
+/* Ensure proper spacing in top songs grid */
+.top-songs-grid {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.song-info {
+    flex: 1;
+    min-width: 0; /* Prevent text overflow */
+}
+
+.song-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.song-artist {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

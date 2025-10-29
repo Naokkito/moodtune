@@ -927,6 +927,10 @@
         elements.resultsSection.style.display = 'block';
         elements.resultsSection.classList.add('mood-transition-enter');
         elements.resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+
+    // Reinitialize icons for the new content
+    lucide.createIcons();
     }
 
     // Add mood visualization to results
@@ -1024,15 +1028,28 @@
                 <p>Most popular tracks matching your mood</p>
             </div>
             <div class="top-songs-grid">
-                ${topSongs.map(song => `
-                    <div class="top-song-card">
-                        <div class="song-rank">${song.rank}</div>
-                        <div class="song-info">
-                            <div class="song-title">${escapeHtml(song.song_name)}</div>
-                            <div class="song-artist">${escapeHtml(song.artist_name)}</div>
+                ${topSongs.map(song => {
+                    const spotifyUrl = `https://open.spotify.com/search/${encodeURIComponent(song.song_name + ' ' + song.artist_name)}`;
+                    const appleMusicUrl = `https://music.apple.com/us/search?term=${encodeURIComponent(song.song_name + ' ' + song.artist_name)}`;
+
+                    return `
+                        <div class="top-song-card">
+                            <div class="song-rank">${song.rank}</div>
+                            <div class="song-info">
+                                <div class="song-title">${escapeHtml(song.song_name)}</div>
+                                <div class="song-artist">${escapeHtml(song.artist_name)}</div>
+                            </div>
+                            <div class="song-actions">
+                                <a href="${spotifyUrl}" target="_blank" class="btn-action spotify-link" title="Search on Spotify">
+                                    <i data-lucide="music"></i>
+                                </a>
+                                <a href="${appleMusicUrl}" target="_blank" class="btn-action apple-music-link" title="Search on Apple Music">
+                                    <i data-lucide="play-circle"></i>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                `).join('')}
+                    `;
+                }).join('')}
             </div>
         `;
         return section;
